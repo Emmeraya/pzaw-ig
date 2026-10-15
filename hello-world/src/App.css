@@ -16,7 +16,24 @@
     outline-offset: 2px;
   }
 }
+img{
+  width: 50%;
+  height: 50%;
+}
+.put_correct{
+  flex-wrap: wrap;
+  position:relative;
+  overflow-x: auto;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
 
+  .img{
+    width: 350px;
+    height: 350px;
+  }
+  
+}
 .hero {
   position: relative;
 
@@ -55,7 +72,13 @@
       scale(0.8);
   }
 }
-
+.Gatos{
+  background-color: rgba(0, 255, 255, 0.425);
+  .P_in_Gat{
+    font-size: large;
+    color: rgb(255, 255, 255);
+  }
+}
 #center {
   display: flex;
   flex-direction: column;

@@ -4,39 +4,61 @@
 //   /** ? means optional */
 //   age?: string;
 // }
-// function Greeter({name="anom", age="0"}: Props){
-//   let tmp_age= Number(age);
-//   if(tmp_age<30){
-//     return(
-//       <p>Witaj {name}</p>
-//     );
-//   }
-//   else{
-//     return (
-//       <p>AAAAAAAAAAAAAA {name}</p>
-//     );
-//   }
-// }
-interface Props{
-  title:string;
+import './App.css'
+interface props{
+
+  title?:string;
   year?:number;
   img?:string;
+  m_link?:string;
 }
-function Movies ({title, year, img}: Props)
-{
-  return(
-    <div>
-      <img src={img}></img>
-      <p>{title}</p>
-      <p>{year}</p>
-    </div>
-  );
+
+function Movies({title, year, img}:props){
+    return(
+      <div>
+        <img src={img} className='img'></img>
+        <p>{title}</p>
+        <p>{year}</p>
+      </div>
+    );
+}
+function Music({title, year, img, m_link}:props){
+    return(
+      <div>
+        <img src={img} className='img'></img>
+        <br />
+        <a href={m_link}>{title}</a>
+        <p>{year}</p>
+        
+      </div>
+    );
 }
 function App(){
   return(
     <div>
-      <Movies title="mewaa" year={123456} img="https://www.tapeciarnia.pl/248337_mewa_ocean_murek"/>
+      <div>
+      <h1>MOVIES AND SERIALS</h1><br />
+      <div className='put_correct'>
+        <Movies title="Andor" year={2022} img="./Andor.jpg"/>
+        <Movies title="Frieren" year={2020} img="./frieren.jpg"/>
+        <Movies title="Project Hail Mary" year={2026} img="./phm.jpg"/>
+      </div>
+     
     </div>
-  )
+    <div>
+      <h1>Music/Albums</h1><br />
+      <div className='put_correct'>
+        <Music title="Zoltraak" year={2023} img="./frieren.jpg" m_link="https://www.youtube.com/watch?v=M7gm_r8hXoU"/>
+        <Music title="An Dro From Other Mother " year={2026} img="./an_dro.jpg" m_link="https://www.youtube.com/watch?v=Aaj0LMGF5uw"/>
+        <Music title="Here I Come (There You Go)" year={2016} img="./here_I_come_RR.jpg" m_link="https://www.youtube.com/watch?v=W5L2QGgmz_k"/>
+        <Music title="The Jester and The Queen" year={2026} img="./jester_and_queen.jpg" m_link="https://www.youtube.com/watch?v=kUWTWWY-sXE"/>
+      </div>
+     
+    </div>
+    </div>
+    
+  );
 }
+
+
 export default App
