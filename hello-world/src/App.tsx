@@ -14,34 +14,33 @@ interface props{
 }
 
 function Movie({title, year, img}:props){
-    return(
+  return(
     <div>
-        <img src={img} className='img'></img>
-        <p>{title}</p>
-        <p>{year}</p>
-      </div>
-    );
+      <img src={img} className='img'></img>
+      <p>{title}</p>
+      <p>{year}</p>
+    </div>
+  )
 }
 function Music({title, year, img, m_link}:props){
-    return(
-      <div>
-        <img src={img} className='img'></img>
-        <br />
-        <a href={m_link}>{title}</a>
-        <p>{year}</p>
-        
-      </div>
-    );
+  return(
+    <div>
+      <img src={img} className='img'></img>
+      <br />
+      <a href={m_link}>{title}</a>
+      <p>{year}</p> 
+    </div>
+  )
 }
 function Bookss({title, autor, year, img}:props){
-    return(
-      <div>
-        <img src={img} className='img'></img>
-        <p>{title}</p>
-        <p>{autor}</p>
-        <p>{year}</p>
-      </div>
-    );
+  return(
+    <div>
+      <img src={img} className='img'></img>
+      <p>{title}</p>
+      <p>{autor}</p>
+      <p>{year}</p>
+    </div>
+  )
 }
 function App(){
   const Movies=[
