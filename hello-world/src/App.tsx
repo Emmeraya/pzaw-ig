@@ -1,4 +1,5 @@
 import './App.css'
+import { useState } from "react";
 interface Book_props{
   title:string;
   year:number;
@@ -11,6 +12,20 @@ interface Movie_props{
   img:string;
   rating: number;
 }
+interface AlbumProps {
+  coverUrl: string;
+  title: string;
+  band: string;
+  genre: string;
+  releaseYear: number;
+  tracks: TrackProps[];
+}
+interface TrackProps {
+  index: number;
+  title: string;
+  length: string;
+}
+
 function Movie({title, year, img, rating}: Movie_props){
   return(
     <div>
@@ -22,31 +37,17 @@ function Movie({title, year, img, rating}: Movie_props){
     </div>
   )
 }
-interface TrackProps {
-  index: number;
-  title: string;
-  length: string;
+function Bookss({title, autor, year, img}:Book_props){
+  return(
+    <div>
+      <img src={img} className='img'></img>
+      <p>{title}</p>
+      <p>{autor}</p>
+      <p>{year}</p>
+      {year < 2000 && <span>Klasyka</span>}
+    </div>
+  )
 }
-
-function Track(props: TrackProps) {
-  return (
-    <tr>
-      <td>{props.index}</td>
-      <td>{props.title}</td>
-      <td>{props.length}</td>
-    </tr>
-  );
-}
-
-interface AlbumProps {
-  coverUrl: string;
-  title: string;
-  band: string;
-  genre: string;
-  releaseYear: number;
-  tracks: TrackProps[];
-}
-
 function Album(props: AlbumProps) {
   return (
     <div>
@@ -75,18 +76,38 @@ function Album(props: AlbumProps) {
     </div>
   );
 }
-
-function Bookss({title, autor, year, img}:Book_props){
-  return(
-    <div>
-      <img src={img} className='img'></img>
-      <p>{title}</p>
-      <p>{autor}</p>
-      <p>{year}</p>
-      {year < 2000 && <span>Klasyka</span>}
-    </div>
-  )
+function Track(props: TrackProps) {
+  return (
+    <tr>
+      <td>{props.index}</td>
+      <td>{props.title}</td>
+      <td>{props.length}</td>
+    </tr>
+  );
 }
+
+//listy zwijane
+interface CollapsibleSectionProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+function CollapsibleSection(props: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <section>
+      <h1 onClick={() => setIsOpen(!isOpen)}
+          style={{ cursor: "pointer" }}>
+        {isOpen ? "v" : ">"} {props.title}
+      </h1>
+
+      {isOpen && props.children}
+    </section>
+  );
+}
+
+
 function App(){
   const Movies=[
     {
@@ -212,44 +233,44 @@ const newMovies = Movies.filter(movie => movie.year > 2010);
 const newestBooks = [...Books].sort((a, b) => b.year - a.year);
   return(
     <div>
-      <h1>MOVIES AND SERIALS</h1><br />
+      <CollapsibleSection title="Movies/Serials">
       <div className='put_correct'>
          {Movies_s.map(m=> <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />)}
       </div>
-
+      </CollapsibleSection>
       <div>
-      <h1>Books</h1><br />
+      <CollapsibleSection title="Books">
       <div className='put_correct'>
         {Books_s.map(b=> <Bookss title={b.title} year={b.year} img={b.img} autor={b.autor} />)}
       </div>
+      </CollapsibleSection>
       </div>
     <div>
-      <h1>Music/Albums</h1><br />
+      <CollapsibleSection title="Albums">
       <div className='put_correct'>
-        <h1>Albumy</h1>
         <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center" }}>
           {Albums_s.map((album) => <Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl} tracks={album.tracks}/>)}
         </div>
       </div>
+      </CollapsibleSection>
       </div>
       <br />
 
-      <h2>Filmy wydane po 2010 roku</h2>
+      <CollapsibleSection title="Movies po 2010">
       <div className='put_correct'>
       {newMovies.map(movie => <Movie key={movie.title} title={movie.title} year={movie.year} img={movie.img} rating={movie.rating} /> )}
       </div>
-
-      <h2>Książki od najnowszej</h2>
+      </CollapsibleSection>
+      <CollapsibleSection title="books od najnowszej">
       <div className='put_correct'>
       {newestBooks.map(book => <Bookss key={book.title} {...book} /> )}
       </div>
-      
-      <h2>Album z największą liczbą utworów</h2>
+      </CollapsibleSection>
+      <CollapsibleSection title="najwięcej utworów">
       <div className='put_correct'>
         <Album band={longestAlbum.band} title={longestAlbum.title} releaseYear={longestAlbum.releaseYear} genre={longestAlbum.genre} coverUrl={longestAlbum.coverUrl} tracks={longestAlbum.tracks} />
-         
       </div>
-
+      </CollapsibleSection>
 
     
     </div>
