@@ -44,7 +44,7 @@ interface AlbumProps {
   band: string;
   genre: string;
   releaseYear: number;
-  children: React.ReactNode;
+  tracks: TrackProps[];
 }
 
 function Album(props: AlbumProps) {
@@ -62,7 +62,15 @@ function Album(props: AlbumProps) {
           <th>Tytuł</th>
           <th>Czas trwania</th>
         </thead>
-        <tbody>{props.children}</tbody>
+         <tbody>
+          {props.tracks.length > 0 ? (props.tracks.map(track => (
+              <Track key={track.index} index={track.index} title={track.title} length={track.length} />
+          ))) : (
+            <tr>
+              <td colSpan={3}>Brak utworów</td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   );
@@ -220,9 +228,7 @@ const newestBooks = [...Books].sort((a, b) => b.year - a.year);
       <div className='put_correct'>
         <h1>Albumy</h1>
         <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center" }}>
-          {Albums_s.map((album) => (<Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl}>
-          {album.tracks.map((track) => (<Track key={track.index} index={track.index} title={track.title} length={track.length}  /> ))}
-          </Album>))}
+          {Albums_s.map((album) => <Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl} tracks={album.tracks}/>)}
         </div>
       </div>
       </div>
@@ -240,9 +246,8 @@ const newestBooks = [...Books].sort((a, b) => b.year - a.year);
       
       <h2>Album z największą liczbą utworów</h2>
       <div className='put_correct'>
-        <Album band={longestAlbum.band} title={longestAlbum.title} releaseYear={longestAlbum.releaseYear} genre={longestAlbum.genre} coverUrl={longestAlbum.coverUrl}>
-         {longestAlbum.tracks.map(track => <Track key={track.index} index={track.index} title={track.title} length={track.length} />)}
-        </Album>
+        <Album band={longestAlbum.band} title={longestAlbum.title} releaseYear={longestAlbum.releaseYear} genre={longestAlbum.genre} coverUrl={longestAlbum.coverUrl} tracks={longestAlbum.tracks} />
+         
       </div>
 
 
