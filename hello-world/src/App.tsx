@@ -1,18 +1,24 @@
 import './App.css'
-interface props{
-  title?:string;
-  year?:number;
-  autor?:string;
-  img?:string;
-  m_link?:string;
+interface Book_props{
+  title:string;
+  year:number;
+  autor:string;
+  img:string;
 }
-
-function Movie({title, year, img}:props){
+interface Movie_props{
+  title:string;
+  year:number;
+  img:string;
+  rating: number;
+}
+function Movie({title, year, img, rating}: Movie_props){
   return(
     <div>
       <img src={img} className='img'></img>
       <p>{title}</p>
       <p>{year}</p>
+      {rating >= 8 && <span>Polecany</span>}
+      <p>{rating}/10</p>
     </div>
   )
 }
@@ -62,13 +68,14 @@ function Album(props: AlbumProps) {
   );
 }
 
-function Bookss({title, autor, year, img}:props){
+function Bookss({title, autor, year, img}:Book_props){
   return(
     <div>
       <img src={img} className='img'></img>
       <p>{title}</p>
       <p>{autor}</p>
       <p>{year}</p>
+      {year < 2000 && <span>Klasyka</span>}
     </div>
   )
 }
@@ -77,17 +84,20 @@ function App(){
     {
       title: "Andor", 
       year: 2022,
-      img: "./Andor.jpg"
+      img: "./Andor.jpg",
+      rating: 10
     },
     {
       title: "Frieren",
       year: 2020,
-      img: "./frieren.jpg"
+      img: "./frieren.jpg",
+      rating: 7
     },
     {
       title:"Project Hail Mary",
       year:2026,
-      img:"./phm.jpg"
+      img:"./phm.jpg",
+      rating: 9
     }
   ]
   const Books=[
@@ -176,17 +186,33 @@ function App(){
     ]
   }
 ];
+const Movies_s = [...Movies].sort((a, b) =>
+  a.title.localeCompare(b.title)
+);
+
+const Books_s = [...Books].sort((a, b) =>
+  a.title.localeCompare(b.title)
+);
+
+const Albums_s = [...Albums].sort((a, b) =>
+  a.title.localeCompare(b.title)
+);
+const longestAlbum = Albums.reduce((a, b) =>
+  a.tracks.length > b.tracks.length ? a : b
+);
+const newMovies = Movies.filter(movie => movie.year > 2010);
+const newestBooks = [...Books].sort((a, b) => b.year - a.year);
   return(
     <div>
       <h1>MOVIES AND SERIALS</h1><br />
       <div className='put_correct'>
-         {Movies.map(m=> <Movie title={m.title} year={m.year} img={m.img} />)}
+         {Movies_s.map(m=> <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />)}
       </div>
 
       <div>
       <h1>Books</h1><br />
       <div className='put_correct'>
-        {Books.map(b=> <Bookss title={b.title} year={b.year} img={b.img} autor={b.autor} />)}
+        {Books_s.map(b=> <Bookss title={b.title} year={b.year} img={b.img} autor={b.autor} />)}
       </div>
       </div>
     <div>
@@ -194,13 +220,33 @@ function App(){
       <div className='put_correct'>
         <h1>Albumy</h1>
         <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center" }}>
-          {Albums.map((album) => (<Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl}>
+          {Albums_s.map((album) => (<Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl}>
           {album.tracks.map((track) => (<Track key={track.index} index={track.index} title={track.title} length={track.length}  /> ))}
           </Album>))}
         </div>
       </div>
-     
-    </div>
+      </div>
+      <br />
+
+      <h2>Filmy wydane po 2010 roku</h2>
+      <div className='put_correct'>
+      {newMovies.map(movie => <Movie key={movie.title} title={movie.title} year={movie.year} img={movie.img} rating={movie.rating} /> )}
+      </div>
+
+      <h2>Książki od najnowszej</h2>
+      <div className='put_correct'>
+      {newestBooks.map(book => <Bookss key={book.title} {...book} /> )}
+      </div>
+      
+      <h2>Album z największą liczbą utworów</h2>
+      <div className='put_correct'>
+        <Album band={longestAlbum.band} title={longestAlbum.title} releaseYear={longestAlbum.releaseYear} genre={longestAlbum.genre} coverUrl={longestAlbum.coverUrl}>
+         {longestAlbum.tracks.map(track => <Track key={track.index} index={track.index} title={track.title} length={track.length} />)}
+        </Album>
+      </div>
+
+
+    
     </div>
     
   );
