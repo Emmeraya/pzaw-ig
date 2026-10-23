@@ -1,5 +1,7 @@
 import './App.css'
 import { useState } from "react";
+
+
 interface Book_props{
   title:string;
   year:number;
@@ -232,7 +234,7 @@ const longestAlbum = Albums.reduce((a, b) =>
 const newMovies = Movies.filter(movie => movie.year > 2010);
 const newestBooks = [...Books].sort((a, b) => b.year - a.year);
   return(
-    <div>
+    <div className="container">
       <CollapsibleSection title="Movies/Serials">
       <div className='put_correct'>
          {Movies_s.map(m=> <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />)}
@@ -247,17 +249,15 @@ const newestBooks = [...Books].sort((a, b) => b.year - a.year);
       </div>
     <div>
       <CollapsibleSection title="Albums">
-      <div className='put_correct'>
         <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center" }}>
           {Albums_s.map((album) => <Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl} tracks={album.tracks}/>)}
         </div>
-      </div>
       </CollapsibleSection>
       </div>
       <br />
 
       <CollapsibleSection title="Movies po 2010">
-      <div className='put_correct'>
+      <div  className='put_correct'>
       {newMovies.map(movie => <Movie key={movie.title} title={movie.title} year={movie.year} img={movie.img} rating={movie.rating} /> )}
       </div>
       </CollapsibleSection>
