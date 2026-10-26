@@ -12,10 +12,8 @@
   }
   
 }
-.Gatos{
-  background-color: rgba(0, 255, 255, 0.425);
-  .P_in_Gat{
-    font-size: large;
-    color: rgb(255, 255, 255);
-  }
+
+.card-img-top {
+  height: 300px;
+  object-fit: contain;
 }

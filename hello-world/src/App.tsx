@@ -1,5 +1,6 @@
 import './App.css'
 import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 interface Book_props{
@@ -30,51 +31,63 @@ interface TrackProps {
 
 function Movie({title, year, img, rating}: Movie_props){
   return(
-    <div>
-      <img src={img} className='img'></img>
-      <p>{title}</p>
-      <p>{year}</p>
-      {rating >= 8 && <span>Polecany</span>}
-      <p>{rating}/10</p>
+    <div className="card h-100">
+      <img src={img} className="card-img-top" alt={title} />
+
+      <div className="card-body">
+        <h5 className="card-title">{title}</h5>
+        <p className="card-text">{year}</p>
+        <p className="card-text">{rating}/10</p>
+
+        {rating >= 8 && <span className="badge bg-success">Polecany</span>}
+      </div>
     </div>
   )
 }
-function Bookss({title, autor, year, img}:Book_props){
+function Bookss({title, autor, year, img}: Book_props){
   return(
-    <div>
-      <img src={img} className='img'></img>
-      <p>{title}</p>
-      <p>{autor}</p>
-      <p>{year}</p>
-      {year < 2000 && <span>Klasyka</span>}
+    <div className="card h-100">
+      <img src={img} className="card-img-top" alt={title} />
+
+      <div className="card-body">
+        <h5 className="card-title">{title}</h5>
+        <p className="card-text">{autor}</p>
+        <p className="card-text">{year}</p>
+
+        {year < 2000 && <span className="badge bg-primary">Klasyka</span>}
+      </div>
     </div>
   )
 }
 function Album(props: AlbumProps) {
   return (
-    <div>
-      <img style={{ height: 375 }} src={props.coverUrl} />
-      <h2>{props.title}</h2>
-      <span>{props.band} </span> &bull;
-      <span>{props.releaseYear} </span> &bull;
-      <span>{props.genre}</span>
+    <div className="card h-100">
+      <img src={props.coverUrl} className="card-img-top" alt={props.title} /> 
+       <div className="card-body">
+        <h5 className="card-title">{props.title}</h5> 
+        <p className="card-text"> {props.band} &bull; {props.releaseYear} &bull; {props.genre} </p>
 
-      <table style={{ width: "100%" }}>
-        <thead>
-          <th>L.p.</th>
-          <th>Tytuł</th>
-          <th>Czas trwania</th>
-        </thead>
-         <tbody>
-          {props.tracks.length > 0 ? (props.tracks.map(track => (
-              <Track index={track.index} title={track.title} length={track.length} />
-          ))) : (
-            <tr>
-              <td colSpan={3}>Brak utworów</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+        {props.tracks.length > 0 ? (
+          <div className="table-responsive">
+            <table className="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>L.p.</th>
+                  <th>Tytuł</th>
+                  <th className="text-end">Czas trwania</th>
+                </tr>
+              </thead>
+              <tbody>
+                {props.tracks.map(track => (<Track key={track.index} index={track.index} title={track.title} length={track.length}  /> ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="alert alert-warning">
+            Brak utworów
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -83,7 +96,7 @@ function Track(props: TrackProps) {
     <tr>
       <td>{props.index}</td>
       <td>{props.title}</td>
-      <td>{props.length}</td>
+      <td className="text-end">{props.length}</td>
     </tr>
   );
 }
@@ -235,54 +248,64 @@ const newMovies = Movies.filter(movie => movie.year > 2010);
 const newestBooks = [...Books].sort((a, b) => b.year - a.year);
   return(
     <div className="container">
-      <CollapsibleSection title="Movies/Serials">
-      <div className="card">
-      <div className='put_correct'>
-        {Movies_s.map(m=> <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />)}
-      </div>
-      </div>
-      </CollapsibleSection>
       
-      
-      <CollapsibleSection title="Books">
-      <div className="card">
-      <div className='put_correct'>
-        {Books_s.map(b=> <Bookss title={b.title} year={b.year} img={b.img} autor={b.autor} />)}
+    <CollapsibleSection title="Movies/Serials">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {Movies_s.map(m =>
+          <div className="col" key={m.title}>
+            <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />
+          </div>
+        )}
       </div>
-      </div> 
-      </CollapsibleSection>
-    
-      <CollapsibleSection title="Albums">
-      <div className="card">
-      <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center" }}>
-        {Albums_s.map((album) => <Album key={album.title} band={album.band} title={album.title} releaseYear={album.releaseYear} genre={album.genre} coverUrl={album.coverUrl} tracks={album.tracks}/>)}
-      </div>
-      </div>
-      </CollapsibleSection>
+    </CollapsibleSection>
 
-      <CollapsibleSection title="Movies po 2010">
-      <div className="card">
-      <div className='put_correct'>
-        {newMovies.map(movie => <Movie key={movie.title} title={movie.title} year={movie.year} img={movie.img} rating={movie.rating} /> )}
+    <CollapsibleSection title="Books">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {Books_s.map(b =>
+          <div className="col" key={b.title}>
+            <Bookss title={b.title} year={b.year} img={b.img} autor={b.autor} />
+          </div>
+        )}
       </div>
-      </div>
-      </CollapsibleSection>
+    </CollapsibleSection>
 
-      <CollapsibleSection title="books od najnowszej">
-      <div className="card">
-      <div className='put_correct'>
-        {newestBooks.map(book => <Bookss key={book.title} {...book} /> )}
+    <CollapsibleSection title="Albums">
+      <div className="row row-cols-1 row-cols-lg-2 g-3">
+        {Albums_s.map(album =>
+          <div className="col" key={album.title}>
+            <Album {...album} />
+          </div>
+        )}
       </div>
-      </div>
-      </CollapsibleSection>
+    </CollapsibleSection>
 
-      <CollapsibleSection title="najwięcej utworów">
-      <div className="card">
-      <div className='put_correct'>
-        <Album band={longestAlbum.band} title={longestAlbum.title} releaseYear={longestAlbum.releaseYear} genre={longestAlbum.genre} coverUrl={longestAlbum.coverUrl} tracks={longestAlbum.tracks} />
+    <CollapsibleSection title="Movies po 2010">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {newMovies.map(movie =>
+          <div className="col" key={movie.title}>
+            <Movie title={movie.title} year={movie.year} img={movie.img} rating={movie.rating} />
+          </div>
+        )}
       </div>
+    </CollapsibleSection>
+
+    <CollapsibleSection title="books od najnowszej">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {newestBooks.map(book =>
+          <div className="col" key={book.title}>
+            <Bookss {...book} />
+          </div>
+        )}
       </div>
-      </CollapsibleSection>
+    </CollapsibleSection>
+
+    <CollapsibleSection title="najwięcej utworów">
+      <div className="row row-cols-1 row-cols-lg-2 g-3">
+        <div className="col">
+          <Album {...longestAlbum} />
+        </div>
+      </div>
+    </CollapsibleSection>
 
     </div>
     
