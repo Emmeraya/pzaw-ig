@@ -1,4 +1,3 @@
-import './App.css'
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -27,18 +26,26 @@ interface TrackProps {
   index: number;
   title: string;
   length: string;
+  onSongClick?: (songTitle: string) => void;
 }
 
 function Movie({title, year, img, rating}: Movie_props){
   return(
-    <div className="card h-100">
+    <div className="card h-100" onClick={() => console.log(`Wybrano film: ${title}`)}>
       <img src={img} className="card-img-top" alt={title} />
 
       <div className="card-body">
         <h5 className="card-title">{title}</h5>
         <p className="card-text">{year}</p>
-        <p className="card-text">{rating}/10</p>
 
+        <button className="btn btn-primary" onClick={(e) => {
+          e.stopPropagation();
+          console.log(`Pokaż szczegóły dla ${title}`);
+        }}>
+          Pokaż szczegóły
+        </button>
+
+        <p className="card-text">{rating}/10</p>
         {rating >= 8 && <span className="badge bg-success">Polecany</span>}
       </div>
     </div>
@@ -60,6 +67,11 @@ function Bookss({title, autor, year, img}: Book_props){
   )
 }
 function Album(props: AlbumProps) {
+
+   function handleSongClick(songTitle: string) {
+    console.log(`Wybrano utwór: ${songTitle} z ${props.title}`);
+  }
+
   return (
     <div className="card h-100">
       <img src={props.coverUrl} className="card-img-top" alt={props.title} /> 
@@ -78,7 +90,7 @@ function Album(props: AlbumProps) {
                 </tr>
               </thead>
               <tbody>
-                {props.tracks.map(track => (<Track key={track.index} index={track.index} title={track.title} length={track.length}  /> ))}
+                {props.tracks.map(track => ( <Track key={track.index} index={track.index} title={track.title} length={track.length} onSongClick={handleSongClick} /> ))}
               </tbody>
             </table>
           </div>
@@ -93,7 +105,7 @@ function Album(props: AlbumProps) {
 }
 function Track(props: TrackProps) {
   return (
-    <tr>
+    <tr onClick={() => props.onSongClick?.(props.title)} style={{cursor: "pointer"}}>
       <td>{props.index}</td>
       <td>{props.title}</td>
       <td className="text-end">{props.length}</td>
@@ -124,6 +136,9 @@ function CollapsibleSection(props: CollapsibleSectionProps) {
 
 
 function App(){
+  const [movieSearch, setMovieSearch] = useState("");
+  const [bookSearch, setBookSearch] = useState("");
+  const [albumSearch, setAlbumSearch] = useState("");
   const Movies=[
     {
       title: "Andor", 
@@ -233,6 +248,9 @@ function App(){
 const Movies_s = [...Movies].sort((a, b) =>
   a.title.localeCompare(b.title)
 );
+const filteredMovies = Movies_s.filter(m =>
+  m.title.toLowerCase().includes(movieSearch.toLowerCase())
+);
 
 const Books_s = [...Books].sort((a, b) =>
   a.title.localeCompare(b.title)
@@ -250,16 +268,26 @@ const newestBooks = [...Books].sort((a, b) => b.year - a.year);
     <div className="container">
       
     <CollapsibleSection title="Movies/Serials">
+      <input type="text" id="movie-search" className="form-control" placeholder="Wpisz tytuł" value={movieSearch} onChange={(e) => { setMovieSearch(e.target.value); console.log(e.target.value); }} />
+      <p>Wpisano: {movieSearch}</p>
+
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-        {Movies_s.map(m =>
-          <div className="col" key={m.title}>
-            <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />
+        {filteredMovies.length > 0 ? (
+          filteredMovies.map(m =>
+            <div className="col" key={m.title}>
+              <Movie title={m.title} year={m.year} img={m.img} rating={m.rating} />
+            </div>
+          )
+          ) : (
+            <p>Nie znaleziono filmów</p>
+          )}
           </div>
-        )}
-      </div>
-    </CollapsibleSection>
+      </CollapsibleSection>
 
     <CollapsibleSection title="Books">
+      <input type="text" id="book-search" className="form-control" placeholder="Wpisz tytuł" value={bookSearch} onChange={(e) => { setBookSearch(e.target.value); console.log(e.target.value); }} />
+      <p>Wpisano: {bookSearch}</p>
+
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
         {Books_s.map(b =>
           <div className="col" key={b.title}>
@@ -270,6 +298,9 @@ const newestBooks = [...Books].sort((a, b) => b.year - a.year);
     </CollapsibleSection>
 
     <CollapsibleSection title="Albums">
+      <input type="text" id="album-search" className="form-control" placeholder="Wpisz tytuł" value={albumSearch} onChange={(e) => { setAlbumSearch(e.target.value); console.log(e.target.value); }} />
+      <p>Wpisano: {albumSearch}</p>
+
       <div className="row row-cols-1 row-cols-lg-2 g-3">
         {Albums_s.map(album =>
           <div className="col" key={album.title}>
