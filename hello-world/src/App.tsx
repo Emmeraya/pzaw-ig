@@ -1,7 +1,6 @@
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 interface Book_props{
   title:string;
   year:number;
@@ -118,7 +117,6 @@ interface CollapsibleSectionProps {
   title: string;
   children: React.ReactNode;
 }
-
 function CollapsibleSection(props: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(true);
 
