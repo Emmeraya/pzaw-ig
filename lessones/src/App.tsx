@@ -1,172 +1,99 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { createContext, useContext, useReducer } from 'react';
+interface TaskData {
+  id: number;
+  text: string;
+  done: boolean;
+}
 
-const TasksContext = createContext(null);
-const TasksDispatchContext = createContext(null);
+interface TaskProps {
+  task: TaskData;
+  onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
+  onEdit: (id: number, text: string) => void;
+}
 
-export function TasksProvider({ children }) {
-  const [tasks, dispatch] = useReducer(
-    tasksReducer,
-    initialTasks
-  );
-
+function Task({ task, onToggle, onDelete, onEdit }: TaskProps) {
   return (
-    <TasksContext value={tasks}>
-      <TasksDispatchContext value={dispatch}>
-        {children}
-      </TasksDispatchContext>
-    </TasksContext>
+    <li>
+      <input type="checkbox" checked={task.done} onChange={() => onToggle(task.id)}/>
+      <input value={task.text} onChange={(e) => onEdit(task.id, e.target.value)}/>
+      <button onClick={() => onDelete(task.id)}>Usuń</button>
+    </li>
   );
 }
 
-export function useTasks() {
-  return useContext(TasksContext);
-}
-
-export function useTasksDispatch() {
-  return useContext(TasksDispatchContext);
-}
-
-function tasksReducer(tasks, action) {
-  switch (action.type) {
-    case 'added': {
-      return [...tasks, {
-        id: action.id,
-        text: action.text,
-        done: false
-      }];
-    }
-    case 'changed': {
-      return tasks.map(t => {
-        if (t.id === action.task.id) {
-          return action.task;
-        } else {
-          return t;
-        }
-      });
-    }
-    case 'deleted': {
-      return tasks.filter(t => t.id !== action.id);
-    }
-    default: {
-      throw Error('Unknown action: ' + action.type);
-    }
-  }
-}
-
-const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+const init_Tasks: TaskData[] = [
+  { id: 1, text: "aaaaaaa", done: false },
+  { id: 2, text: "mimiimi", done: false },
 ];
-
-
-export default function AddTask({ onAddTask }) {
-  const [text, setText] = useState('');
-  const dispatch = useTasksDispatch();
-  return (
-    <>
-      <input
-        placeholder="Add task"
-        value={text}
-        onChange={e => setText(e.target.value)}
-      />
-      <button onClick={() => {
-        setText('');
-        dispatch({
-          type: 'added',
-          id: nextId++,
-          text: text,
-        });
-      }}>Add</button>
-    </>
-  );
-}
 
 let nextId = 3;
 
-export default function TaskList() {
-  const tasks = useTasks();
-  return (
-    <ul>
-      {tasks.map(task => (
-        <li key={task.id}>
-          <Task task={task} />
-        </li>
-      ))}
-    </ul>
-  );
-}
+function App() {
+  const [tasks, setTasks] = useState<TaskData[]>(init_Tasks);
+  const [text, setText] = useState("");
 
-function Task({ task }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const dispatch = useTasksDispatch();
-  let taskContent;
-  if (isEditing) {
-    taskContent = (
-      <>
-        <input
-          value={task.text}
-          onChange={e => {
-            dispatch({
-              type: 'changed',
-              task: {
-                ...task,
-                text: e.target.value
-              }
-            });
-          }} />
-        <button onClick={() => setIsEditing(false)}>
-          Save
-        </button>
-      </>
-    );
-  } else {
-    taskContent = (
-      <>
-        {task.text}
-        <button onClick={() => setIsEditing(true)}>
-          Edit
-        </button>
-      </>
+  const completedTasks = tasks.filter(task => task.done).length;
+
+  function addTask() {
+    if (!text.trim()) return;
+
+    const newTask: TaskData = {
+      id: nextId++,
+      text: text.trim(),
+      done: false,
+    };
+
+    setTasks(previous => [...previous, newTask]);
+    setText("");
+  }
+
+  function toggleTask(id: number) {
+    setTasks(previous =>
+      previous.map(task =>
+        task.id === id
+          ? { ...task, done: !task.done }
+          : task
+      )
     );
   }
+
+  function editTask(id: number, newText: string) {
+    setTasks(previous =>
+      previous.map(task =>
+        task.id === id
+          ? { ...task, text: newText }
+          : task
+      )
+    );
+  }
+
+  function deleteTask(id: number) {
+    setTasks(previous =>
+      previous.filter(task => task.id !== id)
+    );
+  }
+
   return (
-    <label>
-      <input
-        type="checkbox"
-        checked={task.done}
-        onChange={e => {
-          dispatch({
-            type: 'changed',
-            task: {
-              ...task,
-              done: e.target.checked
-            }
-          });
-        }}
-      />
-      {taskContent}
-      <button onClick={() => {
-        dispatch({
-          type: 'deleted',
-          id: task.id
-        });
-      }}>
-        Delete
-      </button>
-    </label>
+    <div>
+      <h1>Lista zadań</h1>
+
+      <p>Wykonano {completedTasks} z {tasks.length} zadań</p>
+
+      <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Nowe zadanie"/>
+      <button onClick={addTask}>Dodaj</button>
+      <ul>
+        {tasks.map(task => (<Task key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} onEdit={editTask}/>
+        ))}
+      </ul>
+    </div>
   );
 }
 
+export default App;
 
-export default function TaskApp() {
-  return (
-    <TasksProvider>
-      <h1>Day off in Kyoto</h1>
-      <AddTask />
-      <TaskList />
-    </TasksProvider>
-  );
-}
+
+//Dla pana informacji: Podzielam opinię Ali, takich rzeczy nie daje się na 2 lekcje. my nie jesteśmy wystarczająco dobrzy z takich plików by móc zrobić w wielu przypadkach ten projekt na 2 sam w sobie.
+// A tą wejściówką bo ktoś używał AI pan nie sprawi że ktoś przestanie używać AI a raczej powiększy pan grupę używającą AI ponieważ tylko ci co użyją AI zdążą zrobić takie programy. 
+//Zwłaszcza jeśli nie mamy dostępu do wielu materiałów, jesteśmy pod presją czasową bo coś jest na ocenę czy poprostu mamy gorszy dzień. NIE MAMY WYSTARCZAJĄCEJ WIEDZY I UMIEJĘTNOŚCI
