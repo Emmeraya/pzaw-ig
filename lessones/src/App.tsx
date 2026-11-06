@@ -35,7 +35,6 @@ function App() {
   const [text, setText] = useState("");
 
   const completedTasks = tasks.filter(task => task.done).length;
-
   function addTask() {
     if (!text.trim()) return;
 
@@ -84,16 +83,18 @@ function App() {
       <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Nowe zadanie"/>
       <button onClick={addTask}>Dodaj</button>
       <ul>
-        {tasks.map(task => (<Task key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} onEdit={editTask}/>
-        ))}
+        {tasks.map(task => (<Task key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} onEdit={editTask}/>))}
+      </ul><br/><br/>
+      <p>zrobione</p>
+      <ul>
+          {tasks.filter(task => task.done).map(task => (<Task key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} onEdit={editTask}/>))}
+      </ul><br/><br/>
+      <p>nie zrobione</p>
+      <ul>
+          {tasks.filter(task => !task.done).map(task => (<Task key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} onEdit={editTask}/>))}
       </ul>
     </div>
   );
 }
 
 export default App;
-
-
-//Dla pana informacji: Podzielam opinię Ali, takich rzeczy nie daje się na 2 lekcje. my nie jesteśmy wystarczająco dobrzy z takich plików by móc zrobić w wielu przypadkach ten projekt na 2 sam w sobie.
-// A tą wejściówką bo ktoś używał AI pan nie sprawi że ktoś przestanie używać AI a raczej powiększy pan grupę używającą AI ponieważ tylko ci co użyją AI zdążą zrobić takie programy. 
-//Zwłaszcza jeśli nie mamy dostępu do wielu materiałów, jesteśmy pod presją czasową bo coś jest na ocenę czy poprostu mamy gorszy dzień. NIE MAMY WYSTARCZAJĄCEJ WIEDZY I UMIEJĘTNOŚCI
