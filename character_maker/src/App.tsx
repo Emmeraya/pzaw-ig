@@ -58,7 +58,7 @@ function CharacterForm(CharacterData:CharacterProps){
 }
 function App() {
   return(
-    <CharacterForm name={''} race={''} class={''} level={1} description={''} public={false}></CharacterForm>
+    <CharacterForm Name={''} Race={''} Class={''} Level={1} Description={''} Public={false}></CharacterForm>
   )
 }
 
